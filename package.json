@@ -1,0 +1,22 @@
+{
+  "name": "kashkash",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "dev": "webpack --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.103.0"
+  },
+  "devDependencies": {
+    "rollup": "^1.9.3",
+    "rollup-plugin-node-resolve": "^4.2.2",
+    "serve": "^11.0.0"
+  }
+}
