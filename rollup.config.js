@@ -8,7 +8,7 @@ export default {
     },
     plugins: [resolve({
         customResolveOptions: {
-            moduleDirectory: 'node_modules'
-        }
+            moduleDirectory: 'node_modules',
+        },
     })]
 }

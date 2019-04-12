@@ -5,13 +5,14 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "dev": "webpack --watch"
+    "build": "rollup -c rollup.config.js",
+    "dev": "rollup -c rollup.config.js --watch && serve dist/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cannon": "^0.6.2",
     "three": "^0.103.0"
   },
   "devDependencies": {
