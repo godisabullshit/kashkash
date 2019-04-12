@@ -11,11 +11,18 @@ import {
 import {Player} from "./player";
 import {Game} from "./game";
 import "cannon";
-
+import {
+    EffectComposer,
+    EffectPass,
+    RenderPass,
+    BloomEffect, // TODO: light up bullets
+    ShockWaveEffect, // TODO: on explodable objects
+    GlitchEffect // TODO: use when health is low
+} from 'postprocessing'
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import { MainCamera } from "./camera";
 
-// Setup renderer
+// RENDERING
 /* TODO: use webgl2
 const canvas = document.createElement('canvas')
 const context = canvas.getContext('webgl2')
@@ -93,6 +100,14 @@ enemy1.position.x = 10
 
 // TODO: implement building with shopkeeper
 
+// POST PROCESSING
+const composer = new EffectComposer(renderer)
+const effectPass = new EffectPass(camera, new BloomEffect())
+
+effectPass.renderToScreen = true
+composer.addPass(new RenderPass(scene, camera))
+composer.addPass(effectPass)
+
 const fixedTimeStep = 1.0/60.0
 const maxSubSteps = 3
 
@@ -107,7 +122,8 @@ function loop() {
     player.update(dt)
     enemy1.update(dt)
 
-    renderer.render(scene, camera)
+    // renderer.render(scene, camera)
+    composer.render(dt)
 }
 
 let now, then = Date.now(), delta

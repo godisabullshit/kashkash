@@ -4,15 +4,17 @@
   "description": "",
   "private": true,
   "scripts": {
+    "start": "serve dist/",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c rollup.config.js",
-    "dev": "rollup -c rollup.config.js --watch && serve dist/"
+    "dev": "rollup -c rollup.config.js --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cannon": "^0.6.2",
+    "postprocessing": "^6.2.1",
     "three": "^0.103.0"
   },
   "devDependencies": {
