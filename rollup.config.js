@@ -1,4 +1,5 @@
 import resolve from 'rollup-plugin-node-resolve'
+import sourcemaps from 'rollup-plugin-sourcemaps'
 
 export default {
     input: './src/index.js',
@@ -6,9 +7,13 @@ export default {
         file: 'dist/main.js',
         format: 'cjs'
     },
-    plugins: [resolve({
-        customResolveOptions: {
-            moduleDirectory: 'node_modules',
-        },
-    })]
+    sourceMap: true,
+    plugins: [
+        resolve({
+            customResolveOptions: {
+                moduleDirectory: 'node_modules',
+            }
+        }),
+        sourcemaps()
+    ]
 }
