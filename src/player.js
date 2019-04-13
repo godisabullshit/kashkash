@@ -1,16 +1,16 @@
-import { Scene, Mesh, BoxGeometry, MeshBasicMaterial, Vector3, MeshPhongMaterial, Plane, Raycaster } from "three";
-import { Game } from "./game";
-import { Bullet } from "./bullet";
+import { Mesh, BoxGeometry, Vector3, MeshPhongMaterial } from "three";
+import Game from "./game";
+import Bullet from "./bullet";
 
-export class Player extends Mesh {
+let _rigidBody, _health
+export default class Player extends Mesh {
 
-    set setHealth(value) {
-        if (value <= 0) {
-            this.health = 0
-            this.die()
-        } else {
-            this.health = value
-        }
+    get health() {
+        return _health
+    }
+
+    get rigidBody() {
+        return _rigidBody
     }
 
     constructor(speed, color, isOwner) {
@@ -23,20 +23,25 @@ export class Player extends Mesh {
         this.speed = speed
         this.velocity = new Vector3(0, 0, 0)
         this.bulletsMesh = []
-        this.health = 100
+        _health = 100
         this.castShadow = true
-        this.rigidbody = new CANNON.Body({
+        
+        _rigidBody = new CANNON.Body({
             mass: 10,
             shape: new CANNON.Box(new CANNON.Vec3(1, 3, 1)),
         })
         
-        Game.getInstance.addObjectWithTag(this, 'player')
+        Game.addObjectWithTag(this, 'player')
 
-        this.rigidbody.addEventListener('collide', ({ body }) => {
+        _rigidBody.addEventListener('collide', ({ body }) => {
             const { id } = body
 
-            if (Game.getInstance.getTag(id) == "bullet") {
-                this.setHealth = this.health - 5
+            if (Game.getTag(id) == "bullet") {
+                _health -= 5
+                if (_health <= 0) {
+                    _health = 0
+                    this.die()
+                }
             }
         })
 
@@ -70,7 +75,7 @@ export class Player extends Mesh {
             })
 
             window.addEventListener('mousemove', event => {
-                const { camera } = Game.getInstance
+                const { camera } = Game
 
                 var vec = new Vector3(); // create once and reuse
                 var pos = new Vector3(); // create once and reuse
@@ -91,7 +96,7 @@ export class Player extends Mesh {
                 this.mouse3D = pos
             })
 
-            window.addEventListener('mousedown', event => {
+            window.addEventListener('mousedown', () => {
                 this.shoot()
             })
         }
@@ -113,22 +118,22 @@ export class Player extends Mesh {
         }
 
         this.bulletsMesh.forEach((bullet, i) => {
-            const { visible, position, rigidbody } = bullet
+            const { visible, position, rigidBody } = bullet
             if (!visible) {
                 this.bulletsMesh.splice(i, 1)
                 return
             }
 
-            if (rigidbody.position)
-                position.copy(rigidbody.position)
+            if (rigidBody.position)
+                position.copy(rigidBody.position)
 
             // static movement
             // position.x += velocity.x * dt
             // position.z += velocity.z * dt
         });
 
-        this.rigidbody.position.copy(this.position)
-        this.rigidbody.quaternion.copy(this.quaternion)
+        this.rigidBody.position.copy(this.position)
+        this.rigidBody.quaternion.copy(this.quaternion)
 
         this.position.x += this.velocity.x * dt
         // TODO: implement gravity
@@ -138,6 +143,6 @@ export class Player extends Mesh {
     die() {
         // TODO: play explosion particle
         // TODO: play die sound
-        Game.getInstance.removeObject(this)
+        Game.removeObject(this)
     }
 }
