@@ -51,8 +51,8 @@ export class Game {
         object.tag = tag
 
         this.scene.add(object)
-        this.world.add(this.rigidbody)
-        tags[tag] = [...tags[tag], this.rigidbody.id]
+        this.world.add(object.rigidbody)
+        this.tags[tag] = [...this.tags[tag], object.rigidbody.id]
     }
 
     /**
@@ -63,9 +63,9 @@ export class Game {
         this.scene.remove(object)
         this.world.remove(object.rigidbody)
 
-        const tagIndex = tags[object.tag].findIndex(id => id == object.rigidbody.id)
+        const tagIndex = this.tags[object.tag].findIndex(id => id == object.rigidbody.id)
         if (tagIndex != -1) {
-            tags[object.tag].splice(tagIndex, 1)
+            this.tags[object.tag].splice(tagIndex, 1)
         }
     }
 }

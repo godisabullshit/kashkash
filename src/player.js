@@ -4,11 +4,16 @@ import { Bullet } from "./bullet";
 
 export class Player extends Mesh {
 
-    constructor(scene, speed, color, isOwner) {
-        if (!(scene instanceof Scene)) return
+    set setHealth(value) {
+        if (value <= 0) {
+            this.health = 0
+            this.die()
+        } else {
+            this.health = value
+        }
+    }
 
-        const { world, tags } = Game.getInstance
-
+    constructor(speed, color, isOwner) {
         // TODO: change with better mesh
         super(
             new BoxGeometry(1, 1, 1),
@@ -24,17 +29,14 @@ export class Player extends Mesh {
             mass: 10,
             shape: new CANNON.Box(new CANNON.Vec3(1, 3, 1)),
         })
-
-        world.add(this.rigidbody)
-        scene.add(this)
-
-        tags['player'] = [...tags['player'], this.rigidbody.id]
+        
+        Game.getInstance.addObjectWithTag(this, 'player')
 
         this.rigidbody.addEventListener('collide', ({ body }) => {
             const { id } = body
 
             if (Game.getInstance.getTag(id) == "bullet") {
-                this.health -= 5
+                this.setHealth = this.health - 5
             }
         })
 
@@ -96,8 +98,7 @@ export class Player extends Mesh {
     }
 
     shoot() {
-        const { scene } = Game.getInstance
-        this.bulletsMesh.push(new Bullet(scene, this))
+        this.bulletsMesh.push(new Bullet(this))
     }
 
     update(dt) {
@@ -132,5 +133,11 @@ export class Player extends Mesh {
         this.position.x += this.velocity.x * dt
         // TODO: implement gravity
         this.position.z += this.velocity.z * dt
+    }
+
+    die() {
+        // TODO: play explosion particle
+        // TODO: play die sound
+        Game.getInstance.removeObject(this)
     }
 }

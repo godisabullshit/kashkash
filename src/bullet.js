@@ -4,17 +4,11 @@ import {Player} from "./player"
 import "cannon";
 
 export class Bullet extends Mesh {
-    constructor(scene, player) {
-        if (!(scene instanceof Scene)) {
-            console.error("scene is null")
-            return
-        }
-
+    constructor(player) {
         super(
             new SphereGeometry(0.25, 8, 8),
             new MeshBasicMaterial({color: 0xffffff})
         )
-        scene.add(this)
 
         this.bulletSpeed = 100
         this.rigidbody = new CANNON.Body( {
@@ -42,11 +36,11 @@ export class Bullet extends Mesh {
             const {id} = body
 
             if (Game.getInstance.getTag(id) == "player") {
-                Bullet.destroy(this)
+                // Bullet.destroy(this)
             }
         })
 
-        setTimeout(Bullet.destroy(this), 1000)
+        setTimeout(() => Bullet.destroy(this), 1000)
     }
 
     static destroy(bullet) {

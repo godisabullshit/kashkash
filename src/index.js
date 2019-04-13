@@ -65,9 +65,48 @@ const loader = new GLTFLoader()
 loader.load(
     'res/models/shop1.gltf', 
     model => {
-        model.scene.scale.setScalar(10)
+        const shop = model.scene.children[0]
+        
+        shop.scale.setScalar(10)
+        shop.position.y = -4.9
+        shop.castShadow = true
 
-        scene.add(model.scene)
+        scene.add(shop)
+
+        let points = [], indices = []
+        const vertexBuffer = shop.geometry.getAttribute('position').array
+        const indicesBuffer = shop.geometry.getIndex().array
+        let x,y,z,tuple
+        for (let i = 0; i < vertexBuffer.length; i++) {
+            const step = i % 3
+            switch(step) {
+                case 0:
+                    x = vertexBuffer[i]
+                    tuple = [indicesBuffer[i]]
+                    continue
+                case 1:
+                    y = vertexBuffer[i]
+                    tuple.push(indicesBuffer[i])
+                    continue
+                case 2:
+                    z = vertexBuffer[i]
+                    tuple.push(indicesBuffer[i])
+
+                    points.push(new CANNON.Vec3(x,y,z))
+
+                    if (i < indicesBuffer.length) {
+                        indices.push(tuple)
+                    }
+                    continue
+            }
+        }
+
+        console.log(points)
+        console.log(indices)
+        // FIXME: collision doesn't work
+        // use ammo.js
+        const convexMesh = new CANNON.ConvexPolyhedron(points, indices)
+        // world.add(convexMesh)
     },
     xhr => console.log(( xhr.loaded / xhr.total * 100 ) + '% loaded'),
     console.error
@@ -84,12 +123,14 @@ plane.castShadow = true
 scene.add(plane)
 
 const game = new Game(scene, camera, world)
-const player = new Player(scene, 10, 0x00ff00, true)
+const player = new Player(10, 0x00ff00, true)
 camera.setTarget = player
 
 // TODO : extend player to enemy class with AI
-const enemy1 = new Player(scene, 5, 0xff0000)
-enemy1.position.x = 10
+const shopkeeper = new Player(5, 0xff0000)
+shopkeeper.position.set(
+    3, 1, -7
+)
 
 // TODO: implement building with shopkeeper
 
@@ -105,7 +146,7 @@ function loop() {
 
     camera.update()
     player.update(dt)
-    enemy1.update(dt)
+    shopkeeper.update(dt)
 
     renderer.render(scene, camera)
 }
