@@ -1,19 +1,21 @@
 import resolve from 'rollup-plugin-node-resolve'
-import sourcemaps from 'rollup-plugin-sourcemaps'
+import { terser } from 'rollup-plugin-terser';
+
+const production = !process.env.ROLLUP_WATCH;
 
 export default {
     input: './src/index.js',
     output: {
         file: 'dist/main.js',
-        format: 'cjs'
+        format: 'iife',
+        sourcemap: true
     },
-    sourceMap: true,
     plugins: [
         resolve({
             customResolveOptions: {
                 moduleDirectory: 'node_modules',
             }
         }),
-        sourcemaps()
+        production && terser()
     ]
 }
