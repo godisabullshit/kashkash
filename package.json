@@ -17,9 +17,9 @@
     "three": "^0.103.0"
   },
   "devDependencies": {
-    "rollup": "^1.9.3",
-    "rollup-plugin-node-resolve": "^4.2.2",
+    "rollup": "^1.25.1",
+    "rollup-plugin-node-resolve": "^4.2.4",
     "rollup-plugin-terser": "^4.0.4",
-    "serve": "^11.0.0"
+    "serve": "^11.2.0"
   }
 }
